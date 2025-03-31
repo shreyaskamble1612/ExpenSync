@@ -58,7 +58,7 @@ const HeroSection = () => {
             />
           </div>
         </div>
-        
+
       </div>
     </div>
   );
@@ -66,4 +66,4 @@ const HeroSection = () => {
 
 export default HeroSection;
 
-// 49.02
+
