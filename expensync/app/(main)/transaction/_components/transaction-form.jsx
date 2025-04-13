@@ -225,7 +225,7 @@ export function AddTransactionForm({
       {/* Date */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Date</label>
-        <Popover>
+        <Po pover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -249,7 +249,7 @@ export function AddTransactionForm({
               initialFocus
             />
           </PopoverContent>
-        </Popover>
+        </Po>
         {errors.date && (
           <p className="text-sm text-red-500">{errors.date.message}</p>
         )}
