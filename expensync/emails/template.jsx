@@ -110,7 +110,7 @@ import {
               )}
   
               <Text style={styles.footer}>
-                Thank you for using Welth. Keep tracking your finances for better
+                Thank you for using ExpenSync. Keep tracking your finances for better
                 financial health!
               </Text>
             </Container>
