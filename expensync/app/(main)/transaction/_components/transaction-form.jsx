@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar"
 import { CreateAccountDrawer } from "@/components/create-account-drawer";
 import { cn } from "@/lib/utils";
 import { createTransaction, updateTransaction } from "@/actions/transaction";
@@ -54,25 +54,25 @@ export function AddTransactionForm({
     defaultValues:
       editMode && initialData
         ? {
-            type: initialData.type,
-            amount: initialData.amount.toString(),
-            description: initialData.description,
-            accountId: initialData.accountId,
-            category: initialData.category,
-            date: new Date(initialData.date),
-            isRecurring: initialData.isRecurring,
-            ...(initialData.recurringInterval && {
-              recurringInterval: initialData.recurringInterval,
-            }),
-          }
+          type: initialData.type,
+          amount: initialData.amount.toString(),
+          description: initialData.description,
+          accountId: initialData.accountId,
+          category: initialData.category,
+          date: new Date(initialData.date),
+          isRecurring: initialData.isRecurring,
+          ...(initialData.recurringInterval && {
+            recurringInterval: initialData.recurringInterval,
+          }),
+        }
         : {
-            type: "EXPENSE",
-            amount: "",
-            description: "",
-            accountId: accounts.find((ac) => ac.isDefault)?.id,
-            date: new Date(),
-            isRecurring: false,
-          },
+          type: "EXPENSE",
+          amount: "",
+          description: "",
+          accountId: accounts.find((ac) => ac.isDefault)?.id,
+          date: new Date(),
+          isRecurring: false,
+        },
   });
 
   const {
@@ -225,7 +225,7 @@ export function AddTransactionForm({
       {/* Date */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Date</label>
-        <Po pover>
+        <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -249,7 +249,7 @@ export function AddTransactionForm({
               initialFocus
             />
           </PopoverContent>
-        </Po>
+        </Popover>
         {errors.date && (
           <p className="text-sm text-red-500">{errors.date.message}</p>
         )}
