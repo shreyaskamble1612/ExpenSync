@@ -9,6 +9,7 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
+// Only use JSON-serializable config, avoid any function values
 const eslintConfig = [...compat.extends("next/core-web-vitals")];
 
 export default eslintConfig;
