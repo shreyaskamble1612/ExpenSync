@@ -18,18 +18,28 @@ const serializeTransaction = (obj) => {
 };
 
 export async function getUserAccounts() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
   try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    let user;
+    try {
+      user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+    } catch (dbErr) {
+      // Database level error (connection/tenant) - surface helpful message
+      console.error("Database error when finding user:", dbErr);
+      throw new Error(
+        "Error querying the database. Check DATABASE_URL and database availability. " +
+          dbErr.message
+      );
+    }
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const accounts = await db.account.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -47,7 +57,8 @@ export async function getUserAccounts() {
 
     return serializedAccounts;
   } catch (error) {
-    console.error(error.message);
+    console.error("getUserAccounts error:", error.message ?? error);
+    throw error;
   }
 }
 
@@ -82,9 +93,18 @@ export async function createAccount(data) {
       throw new Error("Request blocked");
     }
 
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
+    let user;
+    try {
+      user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+    } catch (dbErr) {
+      console.error("Database error when finding user in createAccount:", dbErr);
+      throw new Error(
+        "Error querying the database. Check DATABASE_URL and database availability. " +
+          dbErr.message
+      );
+    }
 
     if (!user) {
       throw new Error("User not found");
@@ -130,27 +150,42 @@ export async function createAccount(data) {
     revalidatePath("/dashboard");
     return { success: true, data: serializedAccount };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("createAccount error:", error.message ?? error);
+    throw error;
   }
 }
 
 export async function getDashboardData() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+    let user;
+    try {
+      user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+      });
+    } catch (dbErr) {
+      console.error("Database error when finding user in getDashboardData:", dbErr);
+      throw new Error(
+        "Error querying the database. Check DATABASE_URL and database availability. " +
+          dbErr.message
+      );
+    }
 
-  if (!user) {
-    throw new Error("User not found");
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get all user transactions
+    const transactions = await db.transaction.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "desc" },
+    });
+
+    return transactions.map(serializeTransaction);
+  } catch (error) {
+    console.error("getDashboardData error:", error.message ?? error);
+    throw error;
   }
-
-  // Get all user transactions
-  const transactions = await db.transaction.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "desc" },
-  });
-
-  return transactions.map(serializeTransaction);
 }

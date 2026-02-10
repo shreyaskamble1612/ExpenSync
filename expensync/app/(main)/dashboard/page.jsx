@@ -10,10 +10,27 @@ import { Plus } from "lucide-react";
 import { AccountCard } from "./_components/account-card";
 
 export default async function DashboardPage() {
-  const [accounts, transactions] = await Promise.all([
-    getUserAccounts(),
-    getDashboardData(),
-  ]);
+  let accounts = [];
+  let transactions = [];
+
+  try {
+    [accounts, transactions] = await Promise.all([
+      getUserAccounts(),
+      getDashboardData(),
+    ]);
+  } catch (error) {
+    // Log and render a friendly message instead of crashing the page
+    console.error("Dashboard data load error:", error?.message ?? error);
+
+    return (
+      <div className="space-y-8">
+        <div className="p-6 bg-red-50 border border-red-200 rounded">
+          <h2 className="text-lg font-semibold text-red-700">Unable to load dashboard</h2>
+          <p className="text-sm text-red-600 mt-2">There was a problem loading your dashboard data. Please try again shortly or contact support.</p>
+        </div>
+      </div>
+    );
+  }
 
   const defaultAccount = accounts?.find((account) => account.isDefault);
 
