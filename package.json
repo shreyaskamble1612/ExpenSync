@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "install": "cd expensync && npm ci",
+    "build": "cd expensync && npm run build",
+    "dev": "cd expensync && npm run dev",
+    "start": "cd expensync && npm start",
+    "seed": "cd expensync && node scripts/seed.mjs"
+  }
+}
